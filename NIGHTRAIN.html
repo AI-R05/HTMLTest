@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>NIGHTRAIN</title>
+    <style>
+        label {
+            font-family: sans-serif;
+            font-size: 1rem;
+            padding-right: 10px;
+        }
+
+        select {
+            font-size: 0.9rem;
+            padding: 2px 5px;
+        }
+
+        .group {
+            display: flex;
+            margin: 0 1%;
+        }
+
+        .minihead {
+            margin: 0;
+        }
+
+        .list,
+        .button-list {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <label for="first">１日目ボス</label>
+    <select id="first">
+    </select> -->
+    <div class="group">
+        <div id="boss" class="group">
+            <div class="list">
+                <p class="minihead">ボス</p>
+                <button class="resetButton">リセット</button>
+            </div>
+            <div class="button-list">
+            </div>
+        </div>
+        <div id="day1" class="group">
+            <div class="list">
+                <p class="minihead">1日目ボス</p>
+                <!-- <button class="resetButton">リセット</button> -->
+            </div>
+            <div class="button-list">
+            </div>
+        </div>
+        <div id="day2" class="group">
+            <div class="list">
+                <p class="minihead">2日目ボス</p>
+                <!-- <button class="resetButton">リセット</button> -->
+            </div>
+            <div class="button-list">
+            </div>
+        </div>
+        <div id="event" class="group">
+            <div class="list">
+                <p class="minihead">発生イベント</p>
+                <!-- <button class="resetButton">リセット</button> -->
+            </div>
+            <div class="button-list">
+            </div>
+        </div>
+        <div id="raid" class="group">
+            <div class="list">
+                <p class="minihead">襲撃イベント</p>
+                <!-- <button class="resetButton">リセット</button> -->
+            </div>
+            <div class="button-list">
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    const firstBosses = [
+        "亜人の女王＆亜人の剣聖",
+        "鈴玉狩り",
+        "貪食ドラゴン",
+        "夜の騎兵×2",
+        "英雄のガーゴイル",
+        "ミミズ顔",
+        "公のフレイディア",
+        "百足のデーモン",
+        "熔鉄デーモン",
+        "戦場の宿将",
+        "ティビアの呼び舟",
+        "爛れた樹霊",
+        "接ぎ木の君主",
+        "王族の幽鬼",
+        "傷ついたデーモン＆うろ底のデーモン",
+        "呪剣士＆神獣の戦士",
+        "大赤熊",
+        "死の騎士",
+    ];
+    const secondBosses = [
+        "ツリーガード＆王都の騎兵",
+        "忌み鬼",
+        "古竜",
+        "坩堝の騎士＆黄金カバ",
+        "僻地の宿将",
+        "ノクスの竜人兵",
+        "竜のツリーガード＆王都の騎兵",
+        "大土竜",
+        "神肌の貴種＆神肌の使徒",
+        "降る星の成獣",
+        "死儀礼の鳥",
+        "無名の王",
+        "冷たい谷の踊り子",
+        "デーモンの王子",
+        "血の君主",
+        "神獣獅子舞",
+        "騎士アルトリウス",
+    ];
+    const event = [
+        "夜の勢力",
+        "隕石",
+        "新たなる脅威",
+        "狂い火",
+        "古の魔術師塔",
+        "歩く霊廟",
+    ];
+    const raid = [
+        "忌み鬼",
+        "兆し",
+        "知性の蟲",
+        "調律の魔物",
+        "炎を呼ぶ獣",
+        "霧の裂け目",
+        "安寧者たち",
+    ];
+    const Bosses = [
+        {
+            name: "夜の獣、グラディウス", first: [
+                "亜人の女王＆亜人の剣聖",
+                "鈴玉狩り",
+            ], second: [
+                "ツリーガード＆王都の騎兵",
+                "忌み鬼",
+            ], event: [
+                "夜の勢力",
+                "隕石",
+            ], raid: [
+            ]
+        },
+        {
+            name: "夜の爵、エデレ", first: [
+                "貪食ドラゴン",
+                "夜の騎兵×2",
+                "英雄のガーゴイル",
+                "ミミズ顔",
+                "公のフレイディア",
+            ], second: [
+                "古竜",
+                "坩堝の騎士＆黄金カバ",
+                "僻地の宿将",
+            ], event: [
+                "隕石",
+                "新たなる脅威",
+            ], raid: [
+                "忌み鬼",
+            ]
+        },
+        {
+            name: "夜の識、グノスター", first: [
+                "百足のデーモン",
+                "熔鉄デーモン",
+                "戦場の宿将",
+                "ティビアの呼び舟",
+                "爛れた樹霊",
+            ], second: [
+                "ノクスの竜人兵",
+                "竜のツリーガード＆王都の騎兵",
+                "大土竜",
+            ], event: [
+                "狂い火",
+                "古の魔術師塔",
+            ], raid: [
+                "忌み鬼",
+                "兆し",
+            ]
+        },
+        {
+            name: "深海の夜、マリス", first: [
+                "貪食ドラゴン",
+                "ミミズ顔",
+                "接ぎ木の君主",
+                "熔鉄デーモン",
+                "英雄のガーゴイル",
+            ], second: [
+                "ツリーガード＆王都の騎兵",
+                "神肌の貴種＆神肌の使徒",
+                "降る星の成獣",
+            ], event: [
+                "夜の勢力",
+                "歩く霊廟",
+            ], raid: [
+                "知性の蟲",
+            ]
+        },
+        {
+            name: "夜の魔、リブラ", first: [
+                "ティビアの呼び舟",
+                "王族の幽鬼",
+                "公のフレイディア",
+                "百足のデーモン",
+                "戦場の宿将",
+            ], second: [
+                "坩堝の騎士＆黄金カバ",
+                "死儀礼の鳥",
+                "神肌の貴種＆神肌の使徒",
+            ], event: [
+                "狂い火",
+                "古の魔術師塔",
+            ], raid: [
+                "知性の蟲",
+            ]
+        },
+        {
+            name: "夜光の騎士、フルゴール", first: [
+                "貪食ドラゴン",
+                "百足のデーモン",
+                "ミミズ顔",
+                "夜の騎兵×2",
+                "王族の幽鬼",
+            ], second: [
+                "ノクスの竜人兵",
+                "無名の王",
+                "僻地の宿将",
+            ], event: [
+                "夜の勢力",
+                "新たなる脅威",
+            ], raid: [
+                "調律の魔物",
+            ]
+        },
+        {
+            name: "夜の霞、カリゴ", first: [
+                "熔鉄デーモン",
+                "ティビアの呼び舟",
+                "爛れた樹霊",
+                "接ぎ木の君主",
+                "公のフレイディア",
+            ], second: [
+                "竜のツリーガード＆王都の騎兵",
+                "神肌の貴種＆神肌の使徒",
+                "冷たい谷の踊り子",
+            ], event: [
+                "隕石",
+                "歩く霊廟",
+            ], raid: [
+                "兆し",
+                "調律の魔物",
+            ]
+        },
+        {
+            name: "夜の王、ナメレス", first: [
+                "亜人の女王＆亜人の剣聖",
+                "鈴玉狩り",
+                "貪食ドラゴン",
+                "夜の騎兵×2",
+                "英雄のガーゴイル",
+                "ミミズ顔",
+                "公のフレイディア",
+                "百足のデーモン",
+                "熔鉄デーモン",
+                "戦場の宿将",
+                "ティビアの呼び舟",
+                "爛れた樹霊",
+                "接ぎ木の君主",
+                "王族の幽鬼",
+            ], second: [
+                "ツリーガード＆王都の騎兵",
+                "忌み鬼",
+                "古竜",
+                "坩堝の騎士＆黄金カバ",
+                "僻地の宿将",
+                "ノクスの竜人兵",
+                "竜のツリーガード＆王都の騎兵",
+                "大土竜",
+                "神肌の貴種＆神肌の使徒",
+                "降る星の成獣",
+                "死儀礼の鳥",
+                "無名の王",
+                "冷たい谷の踊り子",
+            ], event: [
+            ], raid: [
+                "忌み鬼",
+                "兆し",
+                "知性の蟲",
+                "調律の魔物",
+            ]
+        },
+        {
+            name: "英雄武器の娘たち、ハルモニア", first: [
+                "傷ついたデーモン＆うろ底のデーモン",
+                "呪剣士＆神獣の戦士",
+            ], second: [
+                "デーモンの王子",
+                "血の君主",
+            ], event: [
+                "狂い火",
+                "隕石",
+                "歩く霊廟",
+                "新たなる脅威",
+            ], raid: [
+                "炎を呼ぶ獣",
+                "霧の裂け目",
+            ]
+        },
+        {
+            name: "反逆のストラゲス", first: [
+                "大赤熊",
+                "死の騎士",
+            ], second: [
+                "神獣獅子舞",
+                "騎士アルトリウス",
+            ], event: [
+                "狂い火",
+                "新たなる脅威",
+            ], raid: [
+                "忌み鬼",
+                "兆し",
+                "知性の蟲",
+                "調律の魔物",
+                "炎を呼ぶ獣",
+                "霧の裂け目",
+                "安寧者たち",
+            ]
+        },
+    ];
+
+    const divList = [
+        "boss", "day1", "day2", "event", "raid",
+    ];
+    const dataList = [
+        Bosses, firstBosses, secondBosses, event, raid,
+    ];
+
+    let sorted = [false, false, false, false, false];
+
+    window.onload = () => {
+        resetButtonList(99);
+
+        const buttonList = document.querySelectorAll(".resetButton");
+        buttonList.forEach((button, index) => {
+            if (index == 0) {
+                button.onclick = () => {
+                    resetButtonList(99);
+                };
+            }
+            else {
+                button.onclick = () => {
+                    resetButtonList(index);
+                    // sortOtherList(index, button.innerHTML);
+                }
+            }
+        });
+    }
+
+    function resetButtonList(_index) {
+        switch (_index) {
+            case 99: {
+                resetButtonList(0);
+                resetButtonList(1);
+                resetButtonList(2);
+                resetButtonList(3);
+                resetButtonList(4);
+                break;
+            };
+            default: {
+                const div = document.getElementById(divList[_index]);
+                const list = div.querySelector(".button-list");
+                list.innerHTML = "";
+                dataList[_index].forEach(data => {
+                    let name = "";
+                    if (typeof data == "string") {
+                        name = data;
+                    }
+                    else {
+                        name = data.name;
+                    }
+                    list.appendChild(createButton(_index, name));
+                });
+                sorted[_index] = false;
+                break;
+            };
+        }
+    }
+
+    function createButton(_index, _name) {
+        const button = document.createElement("button");
+        button.innerHTML = _name;
+        if (_index != 0) {
+            button.onclick = () => {
+                selectButtonList(_index, _name);
+            }
+        }
+        return button;
+    }
+
+    function selectButtonList(_index, _name) {
+        const div = document.getElementById(divList[_index]);
+        const list = div.querySelector(".button-list");
+        list.innerHTML = "";
+        list.appendChild(createButton(_index, _name));
+        sortOtherList(_index, _name);
+        sorted[0] = sorted[_index] = true;
+    }
+
+    function sortOtherList(_index, _name) {
+        const divs = [];
+        divList.forEach(divname => {
+            divs.push(document.getElementById(divname));
+        });
+        const bosses = Bosses.filter(data => {
+            const key = Object.keys(data)[_index];
+            const ans = sorted[0] ?
+                divs[0].querySelector(".button-list").innerHTML.includes(data.name) : true;
+            return ans && data[key].includes(_name);
+        });
+        const keys = Object.keys(bosses[0]);
+        keys.forEach((key, index) => {
+            if (index == _index) return;
+            if (index != 0 && sorted[index] == true) return;
+
+            const names = [...new Set(bosses.flatMap(boss => boss[key]))];
+            const list = divs[index].querySelector(".button-list");
+            list.innerHTML = "";
+            names.forEach(name => {
+                list.appendChild(createButton(index, name));
+            });
+        });
+    }
+</script>
+
+</html>
